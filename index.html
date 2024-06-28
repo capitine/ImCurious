@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadouken Poll</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            scroll-behavior: smooth;
+        }
+        .section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content {
+            background-color: rgba(52, 73, 94, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        .poll-button {
+            font-size: 18px;
+            padding: 12px 24px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .poll-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .poll-button:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #results {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .result-box {
+            background-color: rgba(41, 128, 185, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+        .result-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .result-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        #ryu-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 30px auto;
+        }
+        #ryu {
+            width: 100px;
+            height: 150px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><line x1="50" y1="20" x2="50" y2="130" stroke="%23fff" stroke-width="4"/><line x1="50" y1="50" x2="100" y2="50" stroke="%23fff" stroke-width="4"/><line x1="50" y1="80" x2="100" y2="80" stroke="%23fff" stroke-width="4"/><line x1="50" y1="130" x2="30" y2="150" stroke="%23fff" stroke-width="4"/><line x1="50" y1="130" x2="70" y2="150" stroke="%23fff" stroke-width="4"/><circle cx="50" cy="20" r="15" fill="%23fff"/></svg>') no-repeat;
+            position: absolute;
+            left: 0;
+        }
+        .hadouken {
+            width: 20px;
+            height: 20px;
+            background-color: #f39c12;
+            border-radius: 50%;
+            position: absolute;
+            top: 65px;
+            left: 100px;
+            animation: fireball 2s infinite;
+            box-shadow: 0 0 10px #f39c12;
+        }
+        @keyframes fireball {
+            0% { transform: translateX(0) scale(1); opacity: 1; }
+            100% { transform: translateX(200px) scale(0.5); opacity: 0; }
+        }
+        .highlight {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .remember {
+            font-style: italic;
+            color: #f1c40f;
+            margin-top: 20px;
+        }
+        .irony {
+            color: #e74c3c;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <div class="content">
+            <h1>Hadouken Poll</h1>
+            <p>I'm Curious. AI made this website for me. My favorite movie is idiocracy. <span class="irony">OH, the irony!</span></p>
+            <p>Now, for the question: Do you know what a <span class="highlight">"HADOUKEN"</span> IS?</p>
+            <p>Answer Below please.</p>
+            <p class="remember">REMEMBER! NO WINNERS OR LOSERS! I just wanna know the results of this... madness.</p>
+            <button class="poll-button" onclick="vote('yes')">Yes</button>
+            <button class="poll-button" onclick="vote('no')">No</button>
+            <p id="thanks" style="display: none;">Thank you for your vote!</p>
+            <p><strong>Results at the bottom of the Page!</strong></p>
+        </div>
+    </div>
+    <div class="section">
+        <div class="content">
+            <h2>Poll Results</h2>
+            <div id="results">
+                <div class="result-box">
+                    <div class="result-title">Yes</div>
+                    <div class="result-value" id="yes-value">0</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-title">No</div>
+                    <div class="result-value" id="no-value">0</div>
+                </div>
+            </div>
+            <div id="ryu-container">
+                <div id="ryu"></div>
+                <div class="hadouken"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let votes = JSON.parse(localStorage.getItem('hadoukenVotes')) || { yes: 0, no: 0 };
+    let hasVoted = localStorage.getItem('hasVoted') === 'true';
+
+    function vote(choice) {
+        if (!hasVoted) {
+            votes[choice]++;
+            updateResults();
+            document.getElementById('thanks').style.display = 'block';
+            disableVoting();
+            hasVoted = true;
+            localStorage.setItem('hasVoted', 'true');
+            localStorage.setItem('hadoukenVotes', JSON.stringify(votes));
+        }
+    }
+
+    function disableVoting() {
+        const buttons = document.querySelectorAll('.poll-button');
+        buttons.forEach(button => {
+            button.disabled = true;
+        });
+    }
+
+    function updateResults() {
+        document.getElementById('yes-value').innerText = votes.yes;
+        document.getElementById('no-value').innerText = votes.no;
+    }
+
+    // Initialize the page
+    window.onload = function() {
+        updateResults();
+        if (hasVoted) {
+            disableVoting();
+            document.getElementById('thanks').style.display = 'block';
+        }
+    }
+
+    // Hadouken animation reset
+    setInterval(() => {
+        const hadouken = document.querySelector('.hadouken');
+        hadouken.style.animation = 'none';
+        hadouken.offsetHeight; // Trigger reflow
+        hadouken.style.animation = null;
+    }, 2000);
+</script>
+</body>
+</html>
